@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from input_data import InputData
 from global_variables import *
 from selenium.webdriver.common.by import By
+from check_smtp import LinkFromVerificationMessage
+from selenium.webdriver.common.keys import Keys
 
 driver = webdriver.Chrome(PATH_TO_DRIVER_CHROME)
 driver.maximize_window()
@@ -53,42 +55,47 @@ class RequiredFields:
 
 class VarificationMessage:
 
-    def go_to_mail(self):
-        driver.get('https://mail.google.com/mail/u/0/')
+    def go_to_verification_link(self):
+        # driver.find_element_by_tag_name('body').send_keys(Keys.COMMAND + 't')
+        time.sleep(5) # TODO need to wait for verification message in inbox
+        driver.get(LinkFromVerificationMessage.get_link())
 
-    def enter_mail(self):
-        driver.find_element_by_id('identifierId').send_keys(InputData.EMAIL_OWNER)  # qq4500162@gmail.com
-
-    def press_next(self):
-        driver.find_element_by_xpath('//div [@id="identifierNext"]/div').click()
-
-    def enter_password(self):
-        driver.find_element_by_name('password').send_keys(InputData.EMAIL_PASSWORD_OWNER)
-
-    def press_next_two(self):
-        time.sleep(2)
-        driver.find_element_by_xpath('//div [@class ="qhFLie"]/div/div/button').click()
-
-    # '//div [@class ="qhFLie"]/div/div'
-    # //div [@class ="qhFLie"]/div/div/button
-
-    def press_on_message(self):
-        try:
-            WebDriverWait(driver, 20).until(
-                ec.presence_of_element_located(
-                    (By.XPATH, "//tr//span[@class='bog']//span[contains(text(), 'Welcome email message.')]")))
-            driver.find_element_by_xpath(
-                "//tr//span[@class='bog']//span[contains(text(), 'Welcome email message.')]").click()
-            assert True, 'element is presented'
-        except TimeoutException:
-            assert False, 'element is not presented'
-
-    def press_on_click_here(self):
-        driver.find_element_by_xpath("//a[contains(text(), 'Click here')]").click()
+    # def go_to_mail(self):
+    #     driver.get('https://mail.google.com/mail/u/0/')
+    #
+    # def enter_mail(self):
+    #     driver.find_element_by_id('identifierId').send_keys(InputData.EMAIL_OWNER)  # qq4500162@gmail.com
+    #
+    # def press_next(self):
+    #     driver.find_element_by_xpath('//div [@id="identifierNext"]/div').click()
+    #
+    # def enter_password(self):
+    #     driver.find_element_by_name('password').send_keys(InputData.EMAIL_PASSWORD_OWNER)
+    #
+    # def press_next_two(self):
+    #     time.sleep(2)
+    #     driver.find_element_by_xpath('//div [@class ="qhFLie"]/div/div/button').click()
+    #
+    # # '//div [@class ="qhFLie"]/div/div'
+    # # //div [@class ="qhFLie"]/div/div/button
+    #
+    # def press_on_message(self):
+    #     try:
+    #         WebDriverWait(driver, 20).until(
+    #             ec.presence_of_element_located(
+    #                 (By.XPATH, "//tr//span[@class='bog']//span[contains(text(), 'Welcome email message.')]")))
+    #         driver.find_element_by_xpath(
+    #             "//tr//span[@class='bog']//span[contains(text(), 'Welcome email message.')]").click()
+    #         assert True, 'element is presented'
+    #     except TimeoutException:
+    #         assert False, 'element is not presented'
+    #
+    # def press_on_click_here(self):
+    #     driver.find_element_by_xpath("//a[contains(text(), 'Click here')]").click()
 
     def enter_password_onwer(self):
-        new_window = driver.window_handles[1]
-        driver.switch_to.window(new_window)
+        # new_window = driver.window_handles[1]
+        # driver.switch_to.window(new_window)
         driver.find_element_by_xpath("//input [@name='password']").send_keys(InputData.NEW_OWNER_PASSWORD)
 
     def enter_confirm_password_onwer(self):
@@ -128,7 +135,7 @@ class ClientPanel:
         driver.find_element_by_css_selector('span.MuiButton-label').click()
 
     def navigate_to_owners_menu(self):
-        driver.find_element_by_css_selector("[title='Owners']").click()
+        driver.find_element_by_xpath('//a [@href="#/owners"]').click()
 
     def click_on_create_button(self):
         driver.find_element_by_css_selector('[aria-label="Create"]').click()
@@ -160,13 +167,14 @@ class AllTests:
 
     def test_message_about_success_set_password(self):
         mail = VarificationMessage()
-        mail.go_to_mail()
-        mail.enter_mail()
-        mail.press_next()
-        mail.enter_password()
-        mail.press_next_two()
-        mail.press_on_message()
-        mail.press_on_click_here()
+        # mail.go_to_mail()
+        # mail.enter_mail()
+        # mail.press_next()
+        # mail.enter_password()
+        # mail.press_next_two()
+        # mail.press_on_message()
+        # mail.press_on_click_here()
+        mail.go_to_verification_link()
         mail.enter_password_onwer()
         mail.enter_confirm_password_onwer()
         mail.enter_save()
